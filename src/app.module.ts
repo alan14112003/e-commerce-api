@@ -7,6 +7,7 @@ import { typeOrmConfig } from './config/typeorm.config';
 import { RolesModule } from './app/roles/roles.module';
 import { PermissionsModule } from './app/permissions/permissions.module';
 import { CategoriesModule } from './app/categories/categories.module';
+import { PermissionsScannerModule } from './app/permissions_scanner/permissions_scanner.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { CategoriesModule } from './app/categories/categories.module';
     RolesModule,
     PermissionsModule,
     CategoriesModule,
+    PermissionsScannerModule,
   ],
 })
 export class AppModule {}
