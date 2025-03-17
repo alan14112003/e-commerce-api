@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   UseGuards,
+  Query,
 } from '@nestjs/common';
 import { ProductsService } from './products.service';
 import { CreateProductDto } from './dto/create-product.dto';
@@ -21,6 +22,7 @@ import {
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { PermissionGuard } from '../auth/guards/permission.guard';
 import { Permission } from '../auth/decorators/permission.decorator';
+import { GetAllProductsDto } from './dto/get-all-products.dto';
 
 @Controller('products')
 @ApiTags('Products')
@@ -42,8 +44,12 @@ export class ProductsController {
   @Permission('products.all')
   @ApiOperation({ summary: 'Lấy danh sách tất cả sản phẩm' })
   @ApiResponse({ status: 200, description: 'Danh sách sản phẩm' })
-  findAll() {
-    return this.productsService.findAll();
+  findAll(@Query() getAllProductDto: GetAllProductsDto) {
+    return this.productsService.findAll(
+      getAllProductDto.page,
+      getAllProductDto.limit,
+      getAllProductDto.search,
+    );
   }
 
   @Get(':id')

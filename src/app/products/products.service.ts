@@ -7,7 +7,7 @@ import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Product } from './entities/product.entity';
-import { Repository } from 'typeorm';
+import { FindOptionsWhere, Like, Repository } from 'typeorm';
 
 @Injectable()
 export class ProductsService {
@@ -29,8 +29,27 @@ export class ProductsService {
     }
   }
 
-  findAll() {
-    return this.productRepository.find();
+  async findAll(page: number = 1, limit: number = 10, search?: string) {
+    const skip = (page - 1) * limit;
+
+    // Tạo điều kiện tìm kiếm nếu có
+    const where: FindOptionsWhere<Product> = search
+      ? { product_name: Like(`%${search}%`) }
+      : {};
+
+    const [results, total] = await this.productRepository.findAndCount({
+      where: { ...where },
+      skip,
+      take: limit,
+    });
+
+    return {
+      data: results,
+      total,
+      page,
+      limit,
+      totalPages: Math.ceil(total / limit),
+    };
   }
 
   async findOne(id: number) {

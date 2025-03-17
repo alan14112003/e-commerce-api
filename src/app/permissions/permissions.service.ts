@@ -2,7 +2,7 @@ import { ConflictException, Injectable } from '@nestjs/common';
 import { CreatePermissionDto } from './dto/create-permission.dto';
 import { UpdatePermissionDto } from './dto/update-permission.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { In, Repository } from 'typeorm';
+import { FindOptionsWhere, In, Like, Repository } from 'typeorm';
 import { Permission } from './entities/permission.entity';
 
 @Injectable()
@@ -23,8 +23,27 @@ export class PermissionsService {
     }
   }
 
-  findAll() {
-    return this.permissionRepository.find();
+  async findAll(page: number = 1, limit: number = 10, search?: string) {
+    const skip = (page - 1) * limit;
+
+    // Tạo điều kiện tìm kiếm nếu có
+    const where: FindOptionsWhere<Permission> = search
+      ? { name: Like(`%${search}%`) }
+      : {};
+
+    const [results, total] = await this.permissionRepository.findAndCount({
+      where: { ...where },
+      skip,
+      take: limit,
+    });
+
+    return {
+      data: results,
+      total,
+      page,
+      limit,
+      totalPages: Math.ceil(total / limit),
+    };
   }
 
   findByIds(ids: number[]) {

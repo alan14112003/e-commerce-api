@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   UseGuards,
+  Query,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -26,6 +27,7 @@ import {
 } from '@nestjs/swagger';
 import { UserResponseDto } from '../auth/dto/user-response.dto';
 import { plainToInstance } from 'class-transformer';
+import { GetAllUsersDto } from './dto/get-all-users.dto';
 
 @Controller('users')
 @UseGuards(JwtAuthGuard, PermissionGuard)
@@ -53,11 +55,12 @@ export class UsersController {
     type: [UserResponseDto],
   })
   @ApiForbiddenResponse({ description: 'Không có quyền truy cập' })
-  async findAll() {
-    const users = this.usersService.findAll();
-    return plainToInstance(UserResponseDto, users, {
-      excludeExtraneousValues: true,
-    });
+  async findAll(@Query() getAllUsersDto: GetAllUsersDto) {
+    return this.usersService.findAll(
+      getAllUsersDto.page,
+      getAllUsersDto.limit,
+      getAllUsersDto.search,
+    );
   }
 
   @Get(':id')

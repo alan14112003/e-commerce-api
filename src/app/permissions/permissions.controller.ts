@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   NotFoundException,
+  Query,
 } from '@nestjs/common';
 import { PermissionsService } from './permissions.service';
 import { CreatePermissionDto } from './dto/create-permission.dto';
@@ -19,6 +20,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { PermissionResponseDto } from './dto/permission-response.dto';
+import { GetAllPermissionsDto } from './dto/get-all-permissions.dto';
 
 @ApiTags('Permissions')
 @Controller('permissions')
@@ -41,8 +43,12 @@ export class PermissionsController {
     description: 'Danh sách quyền',
     type: [PermissionResponseDto],
   })
-  findAll() {
-    return this.permissionsService.findAll();
+  findAll(@Query() getAllPermissionsDto: GetAllPermissionsDto) {
+    return this.permissionsService.findAll(
+      getAllPermissionsDto.page,
+      getAllPermissionsDto.limit,
+      getAllPermissionsDto.search,
+    );
   }
 
   @Get(':id')

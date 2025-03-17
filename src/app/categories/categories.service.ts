@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
-import { In, Repository } from 'typeorm';
+import { FindOptionsWhere, In, Like, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Category } from './entities/category.entity';
 
@@ -23,8 +23,27 @@ export class CategoriesService {
     }
   }
 
-  findAll() {
-    return this.categoryRepository.find();
+  async findAll(page: number = 1, limit: number = 10, search?: string) {
+    const skip = (page - 1) * limit;
+
+    // Tạo điều kiện tìm kiếm nếu có
+    const where: FindOptionsWhere<Category> = search
+      ? { name: Like(`%${search}%`) }
+      : {};
+
+    const [results, total] = await this.categoryRepository.findAndCount({
+      where: { ...where },
+      skip,
+      take: limit,
+    });
+
+    return {
+      data: results,
+      total,
+      page,
+      limit,
+      totalPages: Math.ceil(total / limit),
+    };
   }
 
   findOne(id: number) {

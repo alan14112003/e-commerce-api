@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   UseGuards,
+  Query,
 } from '@nestjs/common';
 import { CategoriesService } from './categories.service';
 import { CreateCategoryDto } from './dto/create-category.dto';
@@ -20,6 +21,7 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
+import { GetAllCategoriesDto } from './dto/get-all-categories.dto';
 
 @Controller('categories')
 @UseGuards(JwtAuthGuard, PermissionGuard)
@@ -41,8 +43,12 @@ export class CategoriesController {
   @Permission('categories.all')
   @ApiOperation({ summary: 'Get all categories' })
   @ApiResponse({ status: 200, description: 'List of categories' })
-  findAll() {
-    return this.categoriesService.findAll();
+  findAll(@Query() getAllCategoriesDto: GetAllCategoriesDto) {
+    return this.categoriesService.findAll(
+      getAllCategoriesDto.page,
+      getAllCategoriesDto.limit,
+      getAllCategoriesDto.search,
+    );
   }
 
   @Get(':id')
