@@ -19,6 +19,20 @@ export class UserResponseDto {
   @Expose()
   email: string;
 
+  @ApiProperty({
+    example: '0123456789',
+    description: 'số điện thoại của người dùng',
+  })
+  @Expose()
+  phone: string;
+
+  @ApiProperty({
+    example: '123/ lê lợi',
+    description: 'địa chỉ của người dùng',
+  })
+  @Expose()
+  address: string;
+
   @ApiProperty({ example: 1, description: 'ID của vai trò (Role)' })
   @Expose()
   @Type(() => RoleResponseDto)
