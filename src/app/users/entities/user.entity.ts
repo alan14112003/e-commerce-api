@@ -19,6 +19,12 @@ export class User {
   @Column()
   password: string;
 
+  @Column()
+  phone: string;
+
+  @Column()
+  address: string;
+
   @ManyToOne(() => Role, (role) => role.users)
   role: Role;
 }

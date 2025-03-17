@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   ConflictException,
   Injectable,
   NotFoundException,
@@ -8,18 +9,36 @@ import { UpdateProductDto } from './dto/update-product.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Product } from './entities/product.entity';
 import { FindOptionsWhere, Like, Repository } from 'typeorm';
+import { Category } from '../categories/entities/category.entity';
 
 @Injectable()
 export class ProductsService {
   constructor(
     @InjectRepository(Product)
     private productRepository: Repository<Product>,
+    @InjectRepository(Category)
+    private categoryRepository: Repository<Category>,
   ) {}
 
   async create(createProductDto: CreateProductDto) {
     try {
-      const product = this.productRepository.create(createProductDto);
-      product.slug = product.slug + '-' + product.id;
+      const category = await this.categoryRepository.findOne({
+        where: {
+          id: createProductDto.categoryId,
+        },
+      });
+
+      if (!category) {
+        throw new BadRequestException(
+          `category #${createProductDto.categoryId} not exist`,
+        );
+      }
+
+      const product = this.productRepository.create({
+        ...createProductDto,
+        category: category,
+      });
+
       return await this.productRepository.save(product);
     } catch (error) {
       if (error.code === 'ER_DUP_ENTRY') {

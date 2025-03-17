@@ -9,6 +9,7 @@ import { PermissionsModule } from './app/permissions/permissions.module';
 import { CategoriesModule } from './app/categories/categories.module';
 import { PermissionsScannerModule } from './app/permissions_scanner/permissions_scanner.module';
 import { ProductsModule } from './app/products/products.module';
+import { OrdersModule } from './app/orders/orders.module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { ProductsModule } from './app/products/products.module';
     CategoriesModule,
     PermissionsScannerModule,
     ProductsModule,
+    OrdersModule,
   ],
 })
 export class AppModule {}
