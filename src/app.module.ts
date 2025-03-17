@@ -8,6 +8,7 @@ import { RolesModule } from './app/roles/roles.module';
 import { PermissionsModule } from './app/permissions/permissions.module';
 import { CategoriesModule } from './app/categories/categories.module';
 import { PermissionsScannerModule } from './app/permissions_scanner/permissions_scanner.module';
+import { ProductsModule } from './app/products/products.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { PermissionsScannerModule } from './app/permissions_scanner/permissions_
     PermissionsModule,
     CategoriesModule,
     PermissionsScannerModule,
+    ProductsModule,
   ],
 })
 export class AppModule {}
